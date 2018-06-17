@@ -156,3 +156,65 @@
     (else (recu slist))))
 
 
+(define (merge loi1 loi2)
+  (cond ((and (null? loi1) (not (null? loi2))) loi2)
+    ((and (null? loi2) (not (null? loi1))) loi1)
+    ((or (> (car loi1) (car loi2)) (= (car loi1) (car loi2))) (cons (car loi2) (cons (car loi1) (merge (cdr loi1) (cdr loi2)))))
+    (else (cons (car loi1) (merge (cdr loi1) (cdr loi2))))))
+
+
+;;;select sort
+(define (selectSort/pred pred loi)
+  (define (select loi)
+    (define (recu lst min)
+      (cond ((null? lst) min)
+        ((pred min (car lst)) (recu (cdr lst) (car lst)))
+        (else (recu (cdr lst) min))))
+    (recu (cdr loi) (car loi)))
+  (define (rember ele lst)
+    (define (recu lst ret)
+      (cond ((null? lst) ret)
+        ((eqv? ele (car lst)) (append ret (cdr lst)))
+        (else (recu (cdr lst) (append ret (list (car lst)))))))
+    (recu lst '()))
+
+  (define (recu lst ret)
+    (cond ((null? lst) ret)
+      (else (let ((min-ele (select lst))) (recu (rember min-ele lst) (append ret (list min-ele)))))))
+  (recu loi '()))
+; (cond ((null? loi1) '())
+;   (else (let ((min-element (select pred loi1))) (cons min-element (sort (rember min-element loi1)))))))
+
+(define (leaf x)
+  x)
+
+(define (leaf? x)
+  (or (symbol? x) (number? x)))
+
+(define (getL node)
+  (cadr node))
+
+(define (getR node)
+  (caddr node))
+
+(define (getC node)
+  (cond ((leaf? node) node)
+    (else (car node))))
+
+(define (interior-node content lNode rNode)
+  (list content lNode rNode))
+
+(define (double-tree tree)
+  (define (double x)
+    (* 2 x))
+  (define (mapper node)
+    (cond ((leaf? node) (double node))
+      (else (double-tree node))))
+  (map mapper tree))
+
+
+
+
+
+
+
