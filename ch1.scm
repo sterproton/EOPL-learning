@@ -213,6 +213,41 @@
   (map mapper tree))
 
 
+(define (mark-leaves-with-red-depth tree)
+  (define (recu tree depth)
+    (cond ((leaf? tree) (leaf depth))
+      (else (cond ((eqv? (getC tree) 'red) (interior-node 'red (recu (getL tree) (+ depth 1)) (recu (getR tree) (+ depth 1))))
+        (else (interior-node (getC tree) (recu (getL tree) depth) (recu (getR tree) depth)))))))
+  (recu tree 0))
+
+(define (path search BST)
+  (define (recu BST acc)
+    (cond ((null? BST) '())
+      ((eqv? search (getC BST)) (reverse acc))
+      ((< search (getC BST)) (recu (getL BST) (cons 'left acc)))
+      (else (recu (getR BST) (cons 'right acc)))))
+  (recu BST '()))
+
+(define (path search BST)
+  (cond ((null? BST) '())
+    ((eqv? search (getC BST)) '())
+    ((< search (getC BST)) (cons 'left (path search (getL BST))))
+    (else (cons 'right (path search (getR BST))))))
+
+(define (number-of-tree tree)
+  (cond ((null? tree) 0)
+    ((leaf? tree) 1)
+    (else (+ (number-of-tree (getL tree)) (number-of-tree (getR tree))))))
+
+
+(define (number-leaves tree)
+  (define (recu tree depth)
+    (cond ((null? tree) '())
+      ((leaf? tree) depth)
+      (else (list (getC tree) (recu (getL tree) depth) (recu (getR tree) (+ depth (number-of-tree (getL tree))))))))
+  (recu tree 0))
+
+;;;lack exercise 35
 
 
 
